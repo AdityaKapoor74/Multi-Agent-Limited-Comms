@@ -3,10 +3,12 @@ Implements a multi-agent gym-style environment for testing Differentiable Discre
 Communication Learning (DDCL). This environment is specifically designed to test an agent's 
 ability to learn an efficient, sparse communication protocol.
 """
+import collections
+
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
-import collections
+
 
 class CommunicatingGoalEnv(gym.Env):
     """
@@ -46,7 +48,8 @@ class CommunicatingGoalEnv(gym.Env):
     """
     metadata = {'render_modes': ['human'], 'render_fps': 4}
 
-    def __init__(self, grid_size=10, max_steps=50, z_dim=10, dynamic_goal=False, goal_move_prob=0.05, goal_sampling_mode='uniform', goal_frequencies=None):
+    def __init__(self, grid_size=10, max_steps=50, z_dim=10, dynamic_goal=False, goal_move_prob=0.05,
+                 goal_sampling_mode='uniform', goal_frequencies=None):
         """
         Initializes the environment.
 
@@ -88,7 +91,7 @@ class CommunicatingGoalEnv(gym.Env):
         if self.goal_sampling_mode == 'non_uniform':
             if goal_frequencies is None:
                 raise ValueError("`goal_frequencies` must be provided for 'non_uniform' sampling mode.")
-            
+
             # Sort items for consistent ordering and convert to lists for sampling
             sorted_goals = sorted(goal_frequencies.items())
             self.goal_indices = [np.ravel_multi_index(goal, (grid_size, grid_size)) for goal, _ in sorted_goals]
@@ -104,7 +107,7 @@ class CommunicatingGoalEnv(gym.Env):
 
         # --- Action Spaces ---
         speaker_action_space = spaces.Box(low=-1.0, high=1.0, shape=(self.z_dim,), dtype=np.float32)
-        listener_action_space = spaces.Discrete(5) # 0: Stay, 1: N, 2: S, 3: E, 4: W
+        listener_action_space = spaces.Discrete(5)  # 0: Stay, 1: N, 2: S, 3: E, 4: W
         self.action_space = spaces.Tuple([speaker_action_space, listener_action_space])
 
     def _get_obs(self):
@@ -161,11 +164,15 @@ class CommunicatingGoalEnv(gym.Env):
         self.current_step += 1
         listener_action = actions[self.LISTENER_IDX]
 
-        if listener_action == 1: self.listener_pos[1] -= 1
-        elif listener_action == 2: self.listener_pos[1] += 1
-        elif listener_action == 3: self.listener_pos[0] += 1
-        elif listener_action == 4: self.listener_pos[0] -= 1
-        
+        if listener_action == 1:
+            self.listener_pos[1] -= 1
+        elif listener_action == 2:
+            self.listener_pos[1] += 1
+        elif listener_action == 3:
+            self.listener_pos[0] += 1
+        elif listener_action == 4:
+            self.listener_pos[0] -= 1
+
         self.listener_pos = np.clip(self.listener_pos, 0, self.grid_size - 1)
 
         if self.dynamic_goal and self.np_random.random() < self.goal_move_prob:
@@ -179,7 +186,7 @@ class CommunicatingGoalEnv(gym.Env):
         # reward = 1.0 if terminated else -0.01 * (1 + self.current_step/self.max_steps)
         reward = 1.0 if terminated else -0.01
         truncated = self.current_step >= self.max_steps
-        
+
         return self._get_obs(), reward, terminated, truncated, {}
 
     def render(self, mode='human'):
@@ -191,7 +198,7 @@ class CommunicatingGoalEnv(gym.Env):
         grid = np.full((self.grid_size, self.grid_size), '_', dtype=str)
         grid[self.goal_pos[1], self.goal_pos[0]] = 'G'
         grid[self.listener_pos[1], self.listener_pos[0]] = 'L'
-        
+
         print("\n" + "=" * (self.grid_size * 2 + 1))
         for row in grid:
             print(" ".join(row))
@@ -203,20 +210,20 @@ if __name__ == '__main__':
     print("--- Running Non-Uniform Goal Sampling Example ---")
     # freqs = { (0, 0): 10, (4, 4): 10, (1, 1): 1, (3, 3): 1 }
     freqs = {
-        (0, 0): 20, 
-        (7, 7): 20, 
-        (3, 4): 10, 
-        (4, 3): 10, 
-        (1, 6): 1, 
+        (0, 0): 20,
+        (7, 7): 20,
+        (3, 4): 10,
+        (4, 3): 10,
+        (1, 6): 1,
         (6, 1): 1
     }
     env_non_uniform = CommunicatingGoalEnv(grid_size=8, goal_sampling_mode='non_uniform', goal_frequencies=freqs)
-    
+
     goal_counts = collections.defaultdict(int)
     for _ in range(1000):
         obs, info = env_non_uniform.reset()
         goal_counts[tuple(env_non_uniform.goal_pos)] += 1
-    
+
     print("Goal sampling counts after 1000 resets:")
     for goal, count in sorted(goal_counts.items()):
         print(f"  Goal {goal}: sampled {count} times")
