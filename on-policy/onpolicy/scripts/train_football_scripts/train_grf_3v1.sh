@@ -81,7 +81,7 @@ echo "WandB project: $WANDB_PROJECT"
 echo ""
 
 # Run the experiment
-python ../train/train_predatorprey.py \
+python ../train/train_football.py \
     --env_name "$ENV_NAME" \
     --scenario_name "$SCENARIO_NAME" \
     --algorithm_name "$ALGORITHM_NAME" \
