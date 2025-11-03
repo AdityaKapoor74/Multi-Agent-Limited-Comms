@@ -5,8 +5,6 @@ This repository contains the official implementation for the paper **"Learning W
 
 ## Overview
 
-[Placeholder for detailed overview of DDCL contributions and methodology] 
-
 Our codebase builds on top of two foundational codebases:
 1. [The Surprising Effectiveness of PPO in Cooperative Multi-Agent Games](https://github.com/marlbenchmark/on-policy) - Our `MAPPO_Transformer` implementation is based on the MAPPO framework. The transformer policy implementation can be found in `onpolicy/algorithms/utils/transformer_encoder.py`, which also has the DDCL and FakeQuant extensions integrated.
 2. [Multi-Agent Graph Communication and Teaming](https://github.com/CORE-Robotics-Lab/MAGIC) - We integrate DDCL with scheduling-based algorithms implemented in the MAGIC codebase, extending their graph-attention communication approach with our novel differentiable discrete communication learning methodology.
