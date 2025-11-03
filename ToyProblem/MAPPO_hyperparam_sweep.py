@@ -10,12 +10,11 @@ import torch
 import wandb
 import itertools
 
-
 sweep_config = {
-    "ddcl_delta": [1 / 5],
-    "learning_rate": [5e-4],
-    "lambda_comms": [4e-3],
-    "update_epochs": [10]
+    "ddcl_delta": [1 / 5, 1 / 10, 1 / 15],
+    "learning_rate": [1e-4, 3e-4, 5e-4],
+    "lambda_comms": [1e-4, 5e-4, 1e-3, 2e-3, 5e-3],
+    "update_epochs": [5, 10, 15]
 }
 
 # Fixed hyperparameters
@@ -48,7 +47,7 @@ def run_single_experiment(config):
         (1, 6): 12,
         (6, 1): 1
     }
-    
+
     # Train using shared training function
     speaker_network, listener_actor, critic, ddcl_channel, _ = train_mappo_agent(
         config=config,
@@ -57,7 +56,7 @@ def run_single_experiment(config):
         wandb_run=wandb.run,
         seed=1
     )
-    
+
     # Post-training analysis
     analyze_and_visualize(speaker_network, ddcl_channel, config, wandb.run)
 
