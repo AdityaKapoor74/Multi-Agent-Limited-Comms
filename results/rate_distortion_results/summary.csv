@@ -1,0 +1,9 @@
+Metric,Value
+Shannon Bound (bits),1.810
+Best Empirical Rate (bits),0.201
+Shannon Gap (bits),-1.609
+Max Success Rate,1.000
+Number of Lambda Values,14
+Seeds per Lambda,5
+Total Experiments,70
+Runtime (hours),4.6

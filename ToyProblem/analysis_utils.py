@@ -21,7 +21,7 @@ def analyze_goal_encoding(speaker_network, ddcl_channel, config):
     speaker_network.eval()
     with torch.no_grad():
         for goal, freq in config["goal_frequencies"].items():
-            goal_normalized = torch.FloatTensor([goal[0]/(grid_size-1), goal[1]/(grid_size-1)]).to(device)
+            goal_normalized = torch.FloatTensor([goal[0], goal[1]]).to(device)
             z = speaker_network(goal_normalized.unsqueeze(0))
             bits = ddcl_channel.calculate_total_bits_from_z(z).item()
             
