@@ -1,7 +1,8 @@
 # Differentiable Discrete Communication Learning (DDCL)
+[![arXiv](https://img.shields.io/badge/arXiv-2511.01554-b31b1b.svg?logo=arxiv)](https://arxiv.org/abs/2511.01554)
 
 <!-- Placeholder for paper overview and description -->
-This repository contains the official implementation for the paper **"Learning What to Say and How Precisely: Efficient Communication via Differentiable Discrete Communication Learning"**. [Arxiv Link - Placeholder]
+This repository contains the official implementation for the paper **"Learning What to Say and How Precisely: Efficient Communication via Differentiable Discrete Communication Learning"**. 
 
 ## Overview
 
